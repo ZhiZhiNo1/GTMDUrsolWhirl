@@ -1,6 +1,7 @@
 package ursolwhirl;
 
 import ursolwhirl.model.Data;
+import ursolwhirl.model.Maze;
 import ursolwhirl.model.Point;
 import ursolwhirl.model.Still;
 
@@ -24,12 +25,12 @@ public class Whirl implements IWhirl {
             System.out.println("迷宫已经完美，不需要旋风");
             return true;
         }
-        Data data = new Data(maze);
+        Data data = new Data(maze, m, n);
         Deque<Data> deque = new ArrayDeque<>();
         deque.add(data);
 
         List<Point> pointList = dfs(deque);
-        if (pointList != null && pointList.size() >0) {
+        if (pointList != null && pointList.size() > 0) {
             result.addAll(pointList);
             return true;
         }
@@ -42,7 +43,7 @@ public class Whirl implements IWhirl {
     }
 
     private List<Point> dfs(Deque<Data> deque) {
-        HashSet<String> set = new HashSet<>();
+        HashSet<Maze> set = new HashSet<>();
         int level = 0;
         while (deque.size() != 0) {
             Data now = deque.pollFirst();
@@ -57,34 +58,32 @@ public class Whirl implements IWhirl {
                 return null;
             }
 
-            short[][] maze = parseString2ArrayMaze(now.maze, m, n);
+            short[][] maze = mazeEncode(now.maze, m, n);
 
-            if (maze != null) {
-                for (int i = 1; i < m - 1; i++) {
-                    for (int j = 1; j < n - 1; j++) {
-                        Point point = new Point(i, j);
-                        short[][] newMaze = mazeRotate(maze, point);
-                        if (newMaze == null) {
-                            System.out.println("出现错误, 异常退出 errorCode = 2");
-                            return null;
-                        }
+            for (int i = 1; i < m - 1; i++) {
+                for (int j = 1; j < n - 1; j++) {
+                    Point point = new Point(i, j);
+                    short[][] newMazeShort = mazeRotate(maze, point);
+                    if (newMazeShort == null) {
+                        System.out.println("出现错误, 异常退出 errorCode = 2");
+                        return null;
+                    }
 
-                        String newMazeString = parseArray2StringMaze(newMaze);
-                        if (!set.contains(newMazeString)) {
-                            List<Point> result = new LinkedList<>(now.steps);
-                            result.add(point);
-                            if (mazeIsPerfect(newMaze, result)) {
-                                System.out.println("找到目标：");
-                                System.out.println("最佳路径为：" + result);
-                                // 找到目标退出
-                                return result;
-                            } else {
-                                Data next = new Data(newMazeString, result);
-                                deque.add(next);
-                                if (level != result.size()) {
-                                    level++;
-                                    System.out.println("搜索深度为" + level + ", time = " + System.currentTimeMillis());
-                                }
+                    Maze newMaze = mazeCoding(newMazeShort, m, n);
+                    if (!set.contains(newMaze)) {
+                        List<Point> result = new LinkedList<>(now.steps);
+                        result.add(point);
+                        if (mazeIsPerfect(newMazeShort, result)) {
+                            System.out.println("找到目标：");
+                            System.out.println("最佳路径为：" + result);
+                            // 找到目标退出
+                            return result;
+                        } else {
+                            Data next = new Data(newMaze, result);
+                            deque.add(next);
+                            if (level != result.size()) {
+                                level++;
+                                System.out.println("搜索深度为" + level + ", time = " + System.currentTimeMillis());
                             }
                         }
                     }

@@ -1,5 +1,6 @@
 import ursolwhirl.*;
 import ursolwhirl.model.Point;
+import ursolwhirl.model.Still;
 
 import java.util.*;
 
@@ -20,8 +21,11 @@ public class Main {
                 {0, 1, 0, 0, 0, 1, 1, 0},
                 {0, 0, 0, 1, 0, 0, 0, 0},
         };
+//        long[] code = mazeCoding(maze, 7, 8);
+//        maze = mazeEncode(code, 7, 8);
+//        for (short[] s : maze)
+//            System.out.println(Arrays.toString(s));
 
-//        String s = Data.mazeToString(maze);
         long startTime = System.currentTimeMillis();
 
         IWhirl whirl = new Whirl();

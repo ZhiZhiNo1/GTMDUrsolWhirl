@@ -1,7 +1,5 @@
 package ursolwhirl.model;
 
-import ursolwhirl.model.Point;
-
 import java.util.List;
 
 public class Still {

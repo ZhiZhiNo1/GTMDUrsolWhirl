@@ -1,5 +1,6 @@
 package ursolwhirl.util;
 
+import ursolwhirl.model.Maze;
 import ursolwhirl.model.Point;
 
 import java.util.ArrayList;
@@ -134,5 +135,36 @@ public class Util {
         int disX = Math.abs(center.x - target.x);
         int disY = Math.abs(center.y - target.y);
         return disX < 2 && disY < 2;
+    }
+
+
+    private static long codeSet(int t, short v, long value) {
+        return (long) v << (3 * (t % 21)) | value;
+    }
+
+    private static short codeGet(int t, long value) {
+        return (short) ((value >>> (3 * (t % 21))) & 7);
+    }
+
+    public static Maze mazeCoding(short[][] maze, int h, int w) {
+        long[] code = new long[h * w / 21 + 1];
+        for (short i = 0; i < h; i++) {
+            for (short j = 0; j < w; j++) {
+                int t = i * w + j;
+                code[t / 21] = codeSet(t, maze[i][j], code[t / 21]);
+            }
+        }
+        return new Maze(code);
+    }
+
+    public static short[][] mazeEncode(Maze code, int h, int w) {
+        short[][] maze = new short[h][w];
+        for (short i = 0; i < h; i++) {
+            for (short j = 0; j < w; j++) {
+                int t = i * w + j;
+                maze[i][j] = codeGet(t, code.maze[t / 21]);
+            }
+        }
+        return maze;
     }
 }
