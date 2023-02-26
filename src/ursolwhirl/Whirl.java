@@ -43,15 +43,16 @@ public class Whirl implements IWhirl {
     }
 
     private List<Point> dfs(Deque<Data> deque) {
+        if (deque == null || deque.isEmpty()) return null;
         HashSet<Maze> set = new HashSet<>();
         int level = 0;
+        set.add(deque.getFirst().maze);
         while (deque.size() != 0) {
             Data now = deque.pollFirst();
             if (now == null) {
                 System.out.println("出现错误, 异常退出 errorCode = 1");
                 return null;
             }
-            set.add(now.maze);
 
             if (now.steps != null && now.steps.size() > 6) {
                 System.out.println("旋风步骤大于6, 停止程序");
@@ -81,6 +82,7 @@ public class Whirl implements IWhirl {
                         } else {
                             Data next = new Data(newMaze, result);
                             deque.add(next);
+                            set.add(now.maze);
                             if (level != result.size()) {
                                 level++;
                                 System.out.println("搜索深度为" + level + ", time = " + System.currentTimeMillis());
